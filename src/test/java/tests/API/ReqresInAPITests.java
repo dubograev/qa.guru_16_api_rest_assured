@@ -38,6 +38,48 @@ public class ReqresInAPITests {
     }
 
     @Test
+    @DisplayName("Single user should not be found")
+    public void singleUserNotFoundTest() {
+        when()
+                .get("https://reqres.in/api/users/23")
+                .then()
+                .statusCode(404)
+                .log().body()
+                .body("isEmpty()", is(true));
+    }
+
+    @Test
+    @DisplayName("LIST <RESOURCE> test")
+    public void listResourceGetTest() {
+        when()
+                .get("/unknown")
+                .then()
+                .statusCode(200)
+                .assertThat().body("data.id", hasItems(1 , 2, 3, 4, 5, 6));
+    }
+
+    @Test
+    @DisplayName("LIST <RESOURCE> test")
+    public void listResourceGetDataSizeTest() {
+        when()
+                .get("/unknown")
+                .then()
+                .statusCode(200)
+                .assertThat().body("data", hasSize(6));
+    }
+
+    @Test
+    @DisplayName("LIST <RESOURCE> test")
+    public void listResourceGetContainsNameTest() {
+        when()
+                .get("/unknown")
+                .then()
+                .statusCode(200)
+                .assertThat().body("data[0].name", equalTo("cerulean"))
+                .assertThat().body("data.name", hasItem("aqua sky"));
+    }
+
+    @Test
     @DisplayName("Создать пользователя с именем morpheus и должностью leader")
     public void createUserViaPostTest() {
         String data = "{ \"name\": \"morpheus\",\n" +
@@ -71,16 +113,5 @@ public class ReqresInAPITests {
                 .log().body()
                 .body("name",is("morpheus"))
                 .body("job",is("zion resident"));
-    }
-
-    @Test
-    @DisplayName("Single user should not be found")
-    public void singleUserNotFoundTest() {
-        when()
-                .get("https://reqres.in/api/users/23")
-        .then()
-                .statusCode(404)
-                .log().body()
-                .body("isEmpty()", is(true));
     }
 }
